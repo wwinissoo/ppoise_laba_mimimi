@@ -4,6 +4,7 @@ def _is_number(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 
+
 class Vector:
     
     def __init__(self, start, end):

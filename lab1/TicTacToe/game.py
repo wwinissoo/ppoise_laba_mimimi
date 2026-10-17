@@ -1,24 +1,8 @@
-"""Implementation of the Tic-Tac-Toe game class."""
-
 class TicTacToe():
-    """
-    Tic-Tac-Toe game for two players.
-
-    The board is square and has a size of at least 3.
-    Players use the X and O marks.
-    """
     __hash__ = None
-    """Mutable game objects are intentionally unhashable."""
-
     def __init__(self, size):
-        """
-        Create an empty size-by-size board, where size is at least 3.
-
-        If another TicTacToe object is passed, create a copy of it.
-
-        :param size: Board size (integer >= 3) or another TicTacToe object.
-        :raises ValueError: If the board size is invalid.
-        """
+        
+        
         if isinstance(size, TicTacToe):
             self.__size = size.__size
             self.__board = [line[:] for line in size.__board]

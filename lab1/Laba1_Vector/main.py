@@ -1,6 +1,5 @@
 from vector import Vector
 
-
 def input_point(title):
     print(title)
 

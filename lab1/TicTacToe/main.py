@@ -1,5 +1,6 @@
 from game import TicTacToe
 
+
 def print_board(game):
     print()
     print(game)
