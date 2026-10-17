@@ -24,7 +24,7 @@ jobs:
             -x "*.pyc" \
             -x "*coverage.xml" \
             -x "*htmlcov*" \
-            -x "*/tests/*" \
+            -x "*/*/test*.py" \
             -x "pytest.ini" \
             -x ".coveragerc" \
             -x ".coverage"
