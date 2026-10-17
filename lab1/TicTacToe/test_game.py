@@ -3,7 +3,8 @@ import io
 
 import pytest
 
-import main
+
+import main as main
 from game import TicTacToe
 
 def test_create_board():
