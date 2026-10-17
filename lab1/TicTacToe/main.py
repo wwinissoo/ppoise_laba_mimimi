@@ -1,4 +1,5 @@
 from game import TicTacToe
+
 def print_board(game):
     print()
     print(game)
@@ -93,12 +94,10 @@ def main():
                 if not game.can_set(position, current):
                     print("Cannot place a mark in this cell.")
                     continue
-
                 game[position] = current
-
+                print_board(game)
                 finished = game_result(game)
                 if finished is not None:
-                    print_board(game)
                     print(finished)
 
             except (ValueError, TypeError, IndexError) as error:

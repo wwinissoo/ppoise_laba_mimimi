@@ -1,5 +1,3 @@
-python3 -m pip install --upgrade pip
-pip install -r ./Laba1_Vector/requirements.txt
 pytest -v \
             Laba1_Vector/ \
             TicTacToe/ \
