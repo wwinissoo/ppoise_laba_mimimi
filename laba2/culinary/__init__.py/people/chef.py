@@ -1,6 +1,7 @@
 class Chef:
     """Объект предметной области: Chef."""
 
+
     def __init__(self, name, phone, email, age, specialization, experience_years):
         self.__name = name
         self.__phone = phone
