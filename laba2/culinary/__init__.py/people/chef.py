@@ -1,4 +1,5 @@
-class Chef:
+from person import Person
+class Chef(Person):
     """Объект предметной области: Chef."""
 
 
