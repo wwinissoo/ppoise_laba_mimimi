@@ -7,6 +7,7 @@ class CookingInstruction:
         self.__difficulty = difficulty
         self.__safety_note = safety_note
 
+
     @property
     def title(self):
         return self.__title
