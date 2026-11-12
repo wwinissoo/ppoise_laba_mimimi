@@ -3,3 +3,5 @@
 .pytest_cache/
 .coverage
 __pycache__/
+laba1/
+.coveragerc
