@@ -5,3 +5,11 @@
 __pycache__/
 laba1/
 .coveragerc
+coverage.xml
+htmlcov/
+build/
+dist/
+*.pyz
+.DS_Store
+.idea/
+.vscode/
