@@ -1,11 +1,25 @@
 from culinary.ingredients.ingredient import Ingredient
 from culinary.exceptions import InvalidIngredientError
 
+
 class Fish(Ingredient):
-    MIN_BONE_COUNT = 0
     """Модель ингредиента типа Fish."""
-    def __init__(self, name, weight, price_per_kg, calories, expiration_days, storage_temperature,
-                 fish_type="белая рыба", has_scales=True, bone_count=10):
+
+    DEFAULT_BONE_COUNT = 10
+    MIN_BONE_COUNT = 0
+
+    def __init__(
+        self,
+        name,
+        weight,
+        price_per_kg,
+        calories,
+        expiration_days,
+        storage_temperature,
+        fish_type="белая рыба",
+        has_scales=True,
+        bone_count=DEFAULT_BONE_COUNT,
+    ):
         super().__init__(name, weight, price_per_kg, calories, expiration_days, storage_temperature)
         if bone_count < self.MIN_BONE_COUNT:
             raise InvalidIngredientError("Количество костей не может быть отрицательным")
@@ -15,13 +29,20 @@ class Fish(Ingredient):
         self.__is_cleaned = False
 
     @property
-    def fish_type(self): return self.__fish_type
+    def fish_type(self):
+        return self.__fish_type
+
     @property
-    def has_scales(self): return self.__has_scales
+    def has_scales(self):
+        return self.__has_scales
+
     @property
-    def bone_count(self): return self.__bone_count
+    def bone_count(self):
+        return self.__bone_count
+
     @property
-    def is_cleaned(self): return self.__is_cleaned
+    def is_cleaned(self):
+        return self.__is_cleaned
 
     def remove_scales(self):
         self.__has_scales = False

@@ -1,5 +1,6 @@
 from .culinaryerror import CulinaryError
 
+
 class DishUnavailableError(CulinaryError):
     """Блюдо недоступно."""
 

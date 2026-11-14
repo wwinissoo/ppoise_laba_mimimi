@@ -1,4 +1,7 @@
 """Кухонный инструмент недоступен."""
-from .culinary_exception import CulinaryException
-class UnavailableToolException(CulinaryException):
+
+from .kitchenequipmenterror import KitchenEquipmentError
+
+
+class UnavailableToolException(KitchenEquipmentError):
     """Кухонный инструмент недоступен."""

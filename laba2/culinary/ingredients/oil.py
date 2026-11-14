@@ -1,11 +1,25 @@
 from culinary.ingredients.ingredient import Ingredient
-from culinary.exceptions import InvalidIngredientError
+from culinary.exceptions import InvalidIngredientError, InvalidTemperatureException
+
 
 class Oil(Ingredient):
-    MIN_SMOKE_POINT = 0
     """Модель ингредиента типа Oil."""
-    def __init__(self, name, weight, price_per_kg, calories, expiration_days, storage_temperature,
-                 smoke_point=200, is_refined=True, oil_type="растительное"):
+
+    DEFAULT_SMOKE_POINT = 200
+    MIN_SMOKE_POINT = 0
+
+    def __init__(
+        self,
+        name,
+        weight,
+        price_per_kg,
+        calories,
+        expiration_days,
+        storage_temperature,
+        smoke_point=DEFAULT_SMOKE_POINT,
+        is_refined=True,
+        oil_type="растительное",
+    ):
         super().__init__(name, weight, price_per_kg, calories, expiration_days, storage_temperature)
         if smoke_point <= self.MIN_SMOKE_POINT:
             raise InvalidIngredientError("Температура дымления должна быть положительной")
@@ -15,17 +29,24 @@ class Oil(Ingredient):
         self.__is_heated = False
 
     @property
-    def smoke_point(self): return self.__smoke_point
+    def smoke_point(self):
+        return self.__smoke_point
+
     @property
-    def is_refined(self): return self.__is_refined
+    def is_refined(self):
+        return self.__is_refined
+
     @property
-    def oil_type(self): return self.__oil_type
+    def oil_type(self):
+        return self.__oil_type
+
     @property
-    def is_heated(self): return self.__is_heated
+    def is_heated(self):
+        return self.__is_heated
 
     def heat(self, temperature):
         if temperature <= 0 or temperature > self.__smoke_point:
-            raise InvalidIngredientError("Температура выходит за допустимый диапазон")
+            raise InvalidTemperatureException("Температура выходит за допустимый диапазон")
         self.__is_heated = True
         return temperature
 

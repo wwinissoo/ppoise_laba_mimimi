@@ -1,5 +1,6 @@
 from .culinaryerror import CulinaryError
 
+
 class WarehouseCapacityError(CulinaryError):
     """Превышена вместимость склада."""
 

@@ -1,19 +1,22 @@
-class Dessert:
-    """Объект предметной области: Dessert."""
+"""Десерт."""
 
-    def __init__(self, name, ingredients, sugar_grams, chilled):
-        self.__name = name
-        self.__ingredients = ingredients
-        self.__sugar_grams = sugar_grams
-        self.__chilled = chilled
+from culinary.validation import require_number
+from .dish import Dish
 
-    @property
-    def name(self):
-        return self.__name
 
-    @property
-    def ingredients(self):
-        return self.__ingredients
+class Dessert(Dish):
+    """Десерт с содержанием сахара; может подаваться охлаждённым."""
+
+    CHILLED_TEMPERATURE = 6
+    ROOM_TEMPERATURE = 20
+    LOW_SUGAR_GRAMS = 10
+
+    def __init__(self, name, recipe, portions, serving_temperature=ROOM_TEMPERATURE, sugar_grams=0, chilled=False):
+        super().__init__(name, recipe, portions, serving_temperature)
+        self.__sugar_grams = require_number(sugar_grams, "Сахар не может быть отрицательным", minimum=0)
+        self.__chilled = False
+        if chilled:
+            self.chill()
 
     @property
     def sugar_grams(self):
@@ -23,12 +26,12 @@ class Dessert:
     def chilled(self):
         return self.__chilled
 
-    def add_component(self, ingredient):
-        self.ingredients.append(ingredient)
+    def calculate_sugar_per_portion(self):
+        return self.sugar_grams / self.portions
 
-    def is_low_sugar(self, limit=10):
-        return self.sugar_grams <= limit
+    def is_low_sugar(self, limit=LOW_SUGAR_GRAMS):
+        return self.calculate_sugar_per_portion() <= limit
 
     def chill(self):
+        self.change_serving_temperature(min(self.serving_temperature, self.CHILLED_TEMPERATURE))
         self.__chilled = True
-

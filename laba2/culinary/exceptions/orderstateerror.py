@@ -1,5 +1,6 @@
 from .culinaryerror import CulinaryError
 
+
 class OrderStateError(CulinaryError):
     """Недопустимое состояние заказа."""
 
