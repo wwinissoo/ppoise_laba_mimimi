@@ -349,8 +349,8 @@ CulinaryException
 - **Пайплайн** `.github/workflows/laba2.yaml` (запуск при изменениях в `laba2/`):
   1. `lint` — `flake8` и `black --check`;
   2. `test` — pytest с покрытием на Python 3.11, 3.12 и 3.13, отчёт `coverage.xml` в артефактах;
-  3. `build` — `python build.py`, пробный запуск `.pyz`, загрузка артефакта;
-     при push в `main` артефакт публикуется в **Releases** (тег `lab2-build-<номер>`).
+  3. сборка — отдельный `build-all.yaml` (lab1 + lab2): `python build.py`, пробный запуск `.pyz`,
+     при push в `main` оба артефакта публикуются в **Releases** (тег `build-<номер>`).
 
 ## 11. Качество кода
 
