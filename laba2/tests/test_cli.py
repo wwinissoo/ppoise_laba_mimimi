@@ -115,7 +115,12 @@ class TestCulinaryConsole:
 
     def test_invalid_number_is_reported(self):
         output, _ = run_console(["1", "2", "Помидор", "много"])
-        assert "Ошибка: could not convert string to float" in output
+        assert "Ошибка: Нужно ввести число, получено «много»" in output
+
+
+def test_invalid_integer_is_reported():
+    output, _ = run_console(["4", "2", "Вася", "+7 900", "", "девяносто"])
+    assert "Ошибка: Нужно ввести целое число, получено «девяносто»" in output
 
 
 class TestMain:
