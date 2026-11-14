@@ -49,10 +49,18 @@ class CulinaryConsole:
         return self._read(prompt).strip()
 
     def _ask_number(self, prompt):
-        return float(self._ask(prompt))
+        answer = self._ask(prompt)
+        try:
+            return float(answer.replace(",", "."))
+        except ValueError:
+            raise ValueError(f"Нужно ввести число, получено «{answer}»") from None
 
     def _ask_integer(self, prompt):
-        return int(self._ask(prompt))
+        answer = self._ask(prompt)
+        try:
+            return int(answer)
+        except ValueError:
+            raise ValueError(f"Нужно ввести целое число, получено «{answer}»") from None
 
     def _main_actions(self):
         return {
