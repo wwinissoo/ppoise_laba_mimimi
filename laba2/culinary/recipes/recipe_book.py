@@ -1,11 +1,17 @@
-from culinary.exceptions import RecipeNotFoundError
-class RecipeBook:
-    """Объект предметной области: RecipeBook."""
+from culinary.exceptions import InvalidRecipeException, RecipeNotFoundError
+from culinary.validation import require_text
+from .recipe import Recipe
 
-    def __init__(self, title, author, recipes):
-        self.__title = title
+
+class RecipeBook:
+    """Кулинарная книга: именованная коллекция рецептов одного автора."""
+
+    def __init__(self, title, author, recipes=None):
+        self.__title = require_text(title, "Название книги не может быть пустым")
         self.__author = author
-        self.__recipes = recipes
+        self.__recipes = []
+        for recipe in recipes or []:
+            self.add_recipe(recipe)
 
     @property
     def title(self):
@@ -17,13 +23,18 @@ class RecipeBook:
 
     @property
     def recipes(self):
-        return self.__recipes
+        return tuple(self.__recipes)
 
     def add_recipe(self, recipe):
-        self.recipes.append(recipe)
+        if not isinstance(recipe, Recipe):
+            raise TypeError("В книгу можно добавить только Recipe")
+        if self.find_by_name(recipe.name):
+            raise InvalidRecipeException(f"Рецепт «{recipe.name}» уже есть в книге")
+        self.__recipes.append(recipe)
 
     def find_by_name(self, name):
-        return [recipe for recipe in self.recipes if recipe.name.lower() == name.lower()]
+        key = name.strip().casefold()
+        return [recipe for recipe in self.__recipes if recipe.name.casefold() == key]
 
     def get_by_name(self, name):
         """Возвращает рецепт по названию или сообщает о его отсутствии."""
@@ -32,6 +43,8 @@ class RecipeBook:
             raise RecipeNotFoundError(f"Рецепт «{name}» не найден")
         return matches[0]
 
-    def count_recipes(self):
-        return len(self.recipes)
+    def find_by_ingredient(self, ingredient_name):
+        return [recipe for recipe in self.__recipes if recipe.has_ingredient(ingredient_name)]
 
+    def count_recipes(self):
+        return len(self.__recipes)

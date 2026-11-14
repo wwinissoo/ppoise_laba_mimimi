@@ -1,5 +1,6 @@
 from .culinaryerror import CulinaryError
 
+
 class SupplierError(CulinaryError):
     """Ошибка поставщика."""
 

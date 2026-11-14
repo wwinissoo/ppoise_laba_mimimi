@@ -1,5 +1,6 @@
 from .culinaryerror import CulinaryError
 
+
 class KitchenEquipmentError(CulinaryError):
     """Ошибка кухонного оборудования."""
 

@@ -1,12 +1,21 @@
+from culinary.units import PERCENT
 from culinary.exceptions import DishUnavailableError
-class MenuItem:
-    """Объект предметной области: MenuItem."""
+from culinary.validation import is_number, require_number, require_text
+from .dish import Dish
 
-    def __init__(self, dish, price, available, category):
+
+class MenuItem:
+    """Позиция меню: блюдо, его цена продажи, категория и доступность."""
+
+    PRICE_PRECISION = 2
+
+    def __init__(self, dish, price, available=True, category="основное"):
+        if not isinstance(dish, Dish):
+            raise TypeError("Позиция меню должна ссылаться на объект Dish")
         self.__dish = dish
-        self.__price = price
-        self.__available = available
-        self.__category = category
+        self.__price = require_number(price, "Цена не может быть отрицательной", minimum=0)
+        self.__available = bool(available)
+        self.__category = require_text(category, "Категория не может быть пустой")
 
     @property
     def dish(self):
@@ -31,9 +40,14 @@ class MenuItem:
         self.__available = True
 
     def apply_discount(self, percent):
-        if not 0 <= percent <= 100: raise ValueError('Скидка должна быть от 0 до 100')
-        self.__price *= (100 - percent) / 100
+        if not is_number(percent) or not 0 <= percent <= PERCENT:
+            raise ValueError("Скидка должна быть от 0 до 100")
+        self.__price = round(self.__price * (PERCENT - percent) / PERCENT, self.PRICE_PRECISION)
+        return self.__price
 
+    def calculate_margin(self):
+        """Наценка: цена продажи минус себестоимость порции."""
+        return self.price - self.dish.calculate_cost_per_portion()
 
     def require_available(self):
         """Вызывает доменное исключение, если позицию нельзя заказать."""

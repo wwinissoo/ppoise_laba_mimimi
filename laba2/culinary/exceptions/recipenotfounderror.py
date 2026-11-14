@@ -1,5 +1,6 @@
 from .culinaryerror import CulinaryError
 
+
 class RecipeNotFoundError(CulinaryError):
     """Рецепт не найден."""
 

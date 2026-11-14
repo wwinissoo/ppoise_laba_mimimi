@@ -1,13 +1,27 @@
+from culinary.units import PERCENT
 from culinary.ingredients.ingredient import Ingredient
 from culinary.exceptions import InvalidIngredientError
 
+
 class Flour(Ingredient):
     """Класс Flour предметной области «Кулинария»."""
+
+    DEFAULT_PROTEIN_PERCENTAGE = 10
     PERCENT_MIN = 0
     PERCENT_MAX = 100
-    """Модель ингредиента типа Flour."""
-    def __init__(self, name, weight, price_per_kg, calories, expiration_days, storage_temperature,
-                 protein_percentage=10, gluten_content="среднее", flour_type="пшеничная"):
+
+    def __init__(
+        self,
+        name,
+        weight,
+        price_per_kg,
+        calories,
+        expiration_days,
+        storage_temperature,
+        protein_percentage=DEFAULT_PROTEIN_PERCENTAGE,
+        gluten_content="среднее",
+        flour_type="пшеничная",
+    ):
         super().__init__(name, weight, price_per_kg, calories, expiration_days, storage_temperature)
         if not self.PERCENT_MIN <= protein_percentage <= self.PERCENT_MAX:
             raise InvalidIngredientError("Белок должен быть от 0 до 100")
@@ -17,20 +31,27 @@ class Flour(Ingredient):
         self.__is_sifted = False
 
     @property
-    def protein_percentage(self): return self.__protein_percentage
+    def protein_percentage(self):
+        return self.__protein_percentage
+
     @property
-    def gluten_content(self): return self.__gluten_content
+    def gluten_content(self):
+        return self.__gluten_content
+
     @property
-    def flour_type(self): return self.__flour_type
+    def flour_type(self):
+        return self.__flour_type
+
     @property
-    def is_sifted(self): return self.__is_sifted
+    def is_sifted(self):
+        return self.__is_sifted
 
     def sift(self):
         self.__is_sifted = True
         return self.weight
 
     def calculate_protein_weight(self):
-        return self.weight * self.__protein_percentage / 100
+        return self.weight * self.__protein_percentage / PERCENT
 
     def is_suitable_for_bread(self):
         return self.__gluten_content in ("среднее", "высокое")

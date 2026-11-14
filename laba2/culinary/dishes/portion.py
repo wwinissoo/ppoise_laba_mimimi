@@ -1,7 +1,17 @@
+from culinary.exceptions import PortionException
+from culinary.validation import require_number, require_positive_int
+from .dish import Dish
+
+
 class Portion:
-    """Объект предметной области: Portion."""
+    """Конкретная порция блюда, поданная к столику."""
 
     def __init__(self, dish, weight, price, table_number):
+        if not isinstance(dish, Dish):
+            raise TypeError("Порция должна ссылаться на объект Dish")
+        require_number(weight, "Вес порции должен быть положительным", PortionException, positive=True)
+        require_number(price, "Цена порции не может быть отрицательной", PortionException, 0)
+        require_positive_int(table_number, "Номер столика должен быть положительным целым числом", PortionException)
         self.__dish = dish
         self.__weight = weight
         self.__price = price
@@ -24,13 +34,11 @@ class Portion:
         return self.__table_number
 
     def calculate_price_per_gram(self):
-        if self.weight <= 0: raise ValueError('Вес должен быть положительным')
         return self.price / self.weight
 
     def is_for_table(self, number):
         return self.table_number == number
 
     def increase_weight(self, grams):
-        if grams <= 0: raise ValueError('Добавка должна быть положительной')
+        require_number(grams, "Добавка должна быть положительной", PortionException, positive=True)
         self.__weight += grams
-

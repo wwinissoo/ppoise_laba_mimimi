@@ -1,13 +1,26 @@
 from culinary.ingredients.ingredient import Ingredient
 from culinary.exceptions import InvalidIngredientError
 
+
 class Spice(Ingredient):
     """Класс Spice предметной области «Кулинария»."""
+
+    DEFAULT_INTENSITY = 5
     INTENSITY_MIN = 0
     INTENSITY_MAX = 10
-    """Модель ингредиента типа Spice."""
-    def __init__(self, name, weight, price_per_kg, calories, expiration_days, storage_temperature,
-                 intensity=5, flavor="пряный", is_ground=False):
+
+    def __init__(
+        self,
+        name,
+        weight,
+        price_per_kg,
+        calories,
+        expiration_days,
+        storage_temperature,
+        intensity=DEFAULT_INTENSITY,
+        flavor="пряный",
+        is_ground=False,
+    ):
         super().__init__(name, weight, price_per_kg, calories, expiration_days, storage_temperature)
         if not self.INTENSITY_MIN <= intensity <= self.INTENSITY_MAX:
             raise InvalidIngredientError("Острота должна быть от 0 до 10")
@@ -17,13 +30,20 @@ class Spice(Ingredient):
         self.__is_mixed = False
 
     @property
-    def intensity(self): return self.__intensity
+    def intensity(self):
+        return self.__intensity
+
     @property
-    def flavor(self): return self.__flavor
+    def flavor(self):
+        return self.__flavor
+
     @property
-    def is_ground(self): return self.__is_ground
+    def is_ground(self):
+        return self.__is_ground
+
     @property
-    def is_mixed(self): return self.__is_mixed
+    def is_mixed(self):
+        return self.__is_mixed
 
     def grind(self):
         self.__is_ground = True
