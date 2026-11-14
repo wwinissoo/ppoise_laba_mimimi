@@ -17,14 +17,10 @@ python3 -m venv .venv
 
 .venv/bin/python main.py                         # консольное меню
 .venv/bin/python -m pytest                       # тесты + покрытие (порог 90 %)
-.venv/bin/flake8 .                               # статический анализ
-.venv/bin/black --check culinary cli main.py build.py tests   # единый стиль
-.venv/bin/python build.py                        # артефакт dist/culinary-lab2.pyz
-python3 dist/culinary-lab2.pyz                   # запуск собранного артефакта
+.venv/bin/python -m pytest --cov=. --cov-report=term-missing
 ```
 
-Артефакт `culinary-lab2.pyz` — самодостаточный zip-архив Python (модуль `zipapp`):
-для запуска нужен только Python 3.11+, без установки зависимостей и без исходников.
+
 
 ## 3. Структура проекта
 
@@ -53,7 +49,7 @@ laba2/
 └── requirements-dev.txt     # + линтеры
 ```
 
-CI/CD-пайплайн: `.github/workflows/laba2.yaml` в корне репозитория (раздел 10).
+
 
 ## 4. Соответствие количественным требованиям
 
