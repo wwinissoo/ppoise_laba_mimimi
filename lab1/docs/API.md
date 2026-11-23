@@ -5,6 +5,8 @@ the headers: for every module it lists the **public interface** (declarations on
 implementation) with the contract of each member: parameters, result and raised exceptions.
 Names with a leading underscore are private and are not part of the interface.
 
+The generated pdoc documentation is in `docs/html/index.html` (rebuild with `pdoc -o docs/html Laba1_Vector/vector.py TicTacToe/game.py`).
+
 ---
 
 ## Module `Laba1_Vector/vector.py`

@@ -37,6 +37,17 @@ jobs:
             ./lab1/TicTacToe \
             --cov=. --cov-report=term-missing --cov-report=xml
     
+      - name: Generate pdoc documentation
+        if: matrix.python-version == '3.13'
+        run: pdoc -o lab1-docs-html ./lab1/Laba1_Vector/vector.py ./lab1/TicTacToe/game.py
+
+      - name: Upload documentation
+        if: matrix.python-version == '3.13'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab1-pdoc-documentation
+          path: ./lab1-docs-html
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
