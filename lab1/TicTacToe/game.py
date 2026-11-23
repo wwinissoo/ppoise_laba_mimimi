@@ -1,8 +1,23 @@
+"""Square Tic-Tac-Toe board with text serialisation and copying."""
+
+
 class TicTacToe():
+    """
+    A square board of ``size x size`` cells.
+
+    A cell holds "X", "O" or " " (empty). Positions are zero-based
+    ``(row, column)`` tuples. Boards are mutable, hence unhashable.
+    """
+
     __hash__ = None
+
     def __init__(self, size):
-        
-        
+        """
+        Create an empty board or a copy of another board.
+
+        :param size: Board side length (int >= 3) or another TicTacToe to copy.
+        :raises ValueError: If size is not an integer of at least 3.
+        """
         if isinstance(size, TicTacToe):
             self.__size = size.__size
             self.__board = [line[:] for line in size.__board]
