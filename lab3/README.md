@@ -16,7 +16,7 @@ python build.py           # build dist/fitness-tracker.pyz
 
 ## CI/CD
 
-GitHub Actions pipeline: `.github/workflows/ci.yml` (runs on push to `main`/`master`, on pull requests and manually):
+GitHub Actions pipeline: `.github/workflows/lab3.yaml` in the repository root (runs on push to `main`/`dev` and on pull requests that touch `lab3/`, and manually):
 
 1. **lint** — `black --check .` and `flake8`;
 2. **test** — `pytest` with coverage (90 % threshold) on Python 3.10–3.13; the `coverage.xml` report is stored as an artifact;
@@ -25,7 +25,7 @@ GitHub Actions pipeline: `.github/workflows/ci.yml` (runs on push to `main`/`mas
 ## Structure
 
 ```text
-.github/workflows/ci.yml  CI/CD pipeline
+(repository root) .github/workflows/lab3.yaml  CI/CD pipeline
 fitness/
   application.py   FitnessTracker — application facade
   validation.py    shared input validation functions
