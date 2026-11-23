@@ -1,0 +1,82 @@
+name: Lab 3 CI
+
+on:
+  push:
+    branches: [main, dev]
+    paths:
+      - "lab3/**"
+      - ".github/workflows/lab3.yaml"
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - "lab3/**"
+      - ".github/workflows/lab3.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: lab3
+
+jobs:
+  lint:
+    name: Style and static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: lab3/requirements-dev.txt
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+      - name: Black
+        run: black --check .
+      - name: Flake8
+        run: flake8
+
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: lab3/requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Pytest with coverage (90 % threshold)
+        run: pytest --cov-report=xml
+      - name: Coverage report
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab3-coverage-report
+          path: lab3/coverage.xml
+
+  build:
+    name: Build fitness-tracker.pyz
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build
+        run: python build.py
+      - name: Smoke test the artifact
+        run: echo 0 | python dist/fitness-tracker.pyz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fitness-tracker
+          path: lab3/dist/fitness-tracker.pyz
