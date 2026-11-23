@@ -1,4 +1,4 @@
-name: Build Release Archive
+name: Build all labs
 
 on:
   push:
@@ -6,43 +6,66 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-lab1:
+    name: Build lab1
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Create zip archive
-        working-directory: .
+      - name: Create lab1 archive
         run: |
-          mkdir -p ../dist
-          zip -r ../dist/lab1-${{ github.sha }}.zip . \
-            -x "*.git*" \
-            -x "*__pycache__*" \
-            -x "*.pytest_cache*" \
-            -x "*.pyc" \
-            -x "*coverage.xml" \
-            -x "*htmlcov*" \
-            -x "*/*/test*.py" \
-            -x "pytest.ini" \
-            -x ".coveragerc" \
-            -x ".coverage"
+          mkdir -p dist
+          zip -r dist/lab1.zip lab1 \
+            -x "*__pycache__*" "*.pyc" "*.pytest_cache*" "*coverage.xml" "*htmlcov*" \
+            -x "*/test*.py" "*/*/test*.py" "*localcitest.sh"
 
-      - name: Upload archive as artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: lab1-build-${{ github.sha }}
-          path: dist/lab1-${{ github.sha }}.zip
+          name: lab1-build
+          path: dist/lab1.zip
           retention-days: 30
 
-      - name: Create GitHub Release with archive
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
+  build-lab2:
+    name: Build lab2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Build executable archive
+        working-directory: laba2
+        run: python build.py
+
+      - name: Smoke test the artifact
+        working-directory: laba2
+        run: printf '8\n0\n' | python dist/culinary-lab2.pyz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lab2-build
+          path: laba2/dist/culinary-lab2.pyz
+          retention-days: 30
+
+  release:
+    name: Publish release
+    needs: [build-lab1, build-lab2]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: "Build #${{ github.run_number }}"
-          files: dist/lab1-${{ github.sha }}.zip
+          name: "Build #${{ github.run_number }} (lab1 + lab2)"
+          files: |
+            dist/lab1.zip
+            dist/culinary-lab2.pyz
           generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
