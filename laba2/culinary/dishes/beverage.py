@@ -16,7 +16,6 @@ class Beverage(Dish):
     def volume_ml(self):
         return self.__volume_ml
 
-
     @property
     def is_carbonated(self):
         return self.__is_carbonated
