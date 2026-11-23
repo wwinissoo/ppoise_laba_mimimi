@@ -1,11 +1,27 @@
+"""Three-dimensional vector defined by a start point and an end point."""
+
 import math
 
 def _is_number(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool)
 
 class Vector:
-    
+    """
+    A vector in three-dimensional space.
+
+    The state is private: the start and end points are tuples of three numbers.
+    Supports arithmetic, comparison by length, text conversion and copying.
+    """
+
     def __init__(self, start, end):
+        """
+        Create a vector from two points.
+
+        :param start: Start point, three numbers.
+        :param end: End point, three numbers.
+        :raises ValueError: If a point does not have exactly three coordinates.
+        :raises TypeError: If a coordinate is not a number.
+        """
         if len(start) != 3 or len(end) != 3:
             raise ValueError("Нужно указать 3 координаты.")
 
@@ -17,37 +33,37 @@ class Vector:
 
     def get_start(self):
         """
-        Возвращает координаты начала вектора.
+        Return the coordinates of the start point.
         """
         return self.__start
 
     def get_end(self):
         """
-        Возвращает координаты конца вектора.
+        Return the coordinates of the end point.
         """
         return self.__end
 
     def get_x(self):
         """
-        Возвращает координату X вектора.
+        Return the X component of the vector.
         """
         return self.__end[0] - self.__start[0]
 
     def get_y(self):
         """
-        Возвращает координату Y вектора.
+        Return the Y component of the vector.
         """
         return self.__end[1] - self.__start[1]
 
     def get_z(self):
         """
-        Возвращает координату Z вектора.
+        Return the Z component of the vector.
         """
         return self.__end[2] - self.__start[2]
 
     def length(self):
         """
-        Вычисляет длину вектора.
+        Return the Euclidean length of the vector.
         """
         x = self.get_x()
         y = self.get_y()
@@ -57,7 +73,7 @@ class Vector:
 
     def __add__(self, other):
         """
-        Сложение двух векторов.
+        Add two vectors component-wise.
         """
         if not isinstance(other, Vector):
             raise TypeError("Можно складывать только векторы.")
@@ -76,7 +92,7 @@ class Vector:
 
     def __iadd__(self, other):
         """
-        Сложение с присваиванием.
+        Add in place (``+=``) and return the modified vector.
         """
         result = self + other
         self.__end = result.get_end()
@@ -85,7 +101,7 @@ class Vector:
 
     def __sub__(self, other):
         """
-        Вычитание двух векторов.
+        Subtract two vectors component-wise.
         """
         if not isinstance(other, Vector):
             raise TypeError("Можно вычитать только векторы.")
@@ -104,7 +120,7 @@ class Vector:
 
     def __isub__(self, other):
         """
-        Вычитание с присваиванием.
+        Subtract in place (``-=``) and return the modified vector.
         """
         result = self - other
         self.__end = result.get_end()
@@ -113,7 +129,7 @@ class Vector:
 
     def __mul__(self, other):
         """
-        Векторное произведение или умножение на число.
+        Return the cross product (vector operand) or multiply by a number.
         """
 
         if isinstance(other, Vector):
@@ -156,13 +172,13 @@ class Vector:
 
     def __rmul__(self, number):
         """
-        Умножение числа на вектор.
+        Support ``number * vector``.
         """
         return self * number
 
     def __imul__(self, other):
         """
-        Умножение с присваиванием.
+        Multiply in place (``*=``) and return the modified vector.
         """
         result = self * other
         self.__end = result.get_end()
@@ -171,7 +187,7 @@ class Vector:
 
     def __truediv__(self, number):
         """
-        Деление вектора на число.
+        Divide the vector by a number.
         """
 
         if not _is_number(number):
@@ -194,7 +210,7 @@ class Vector:
 
     def __itruediv__(self, number):
         """
-        Деление с присваиванием.
+        Divide in place (``/=``) and return the modified vector.
         """
         result = self / number
         self.__end = result.get_end()
@@ -203,7 +219,7 @@ class Vector:
 
     def cosine(self, other):
         """
-        Вычисляет косинус угла между двумя векторами.
+        Return the cosine of the angle between two vectors.
         """
 
         if not isinstance(other, Vector):
@@ -225,7 +241,7 @@ class Vector:
 
     def __eq__(self, other):
         """
-        Проверяет равенство двух векторов.
+        Check whether two vectors are equal.
         """
         if not isinstance(other, Vector):
             return False
@@ -238,23 +254,23 @@ class Vector:
 
     def __ne__(self, other):
         """
-        Проверяет неравенство двух векторов.
+        Check whether two vectors are not equal.
         """
         return not self == other
 
     def __hash__(self):
         """
-        Возвращает хеш вектора по его компонентам.
+        Return a hash computed from the vector components.
 
-        Равные векторы имеют одинаковый хеш. Составные операции
-        (``+=``, ``-=``, ``*=``, ``/=``) изменяют вектор, поэтому
-        не следует изменять вектор, пока он хранится в ``set`` или ``dict``.
+        Equal vectors have equal hashes. The in-place operations
+        (``+=``, ``-=``, ``*=``, ``/=``) modify the vector, so do not
+        modify a vector while it is stored in a ``set`` or used as a ``dict`` key.
         """
         return hash((self.get_x(), self.get_y(), self.get_z()))
 
     def __lt__(self, other):
         """
-        Проверяет, короче ли первый вектор второго.
+        Check whether this vector is shorter than the other.
         """
 
         if not isinstance(other, Vector):
@@ -264,7 +280,7 @@ class Vector:
 
     def __le__(self, other):
         """
-        Проверяет, не длиннее ли первый вектор второго.
+        Check whether this vector is not longer than the other.
         """
 
         if not isinstance(other, Vector):
@@ -274,7 +290,7 @@ class Vector:
 
     def __gt__(self, other):
         """
-        Проверяет, длиннее ли первый вектор второго.
+        Check whether this vector is longer than the other.
         """
 
         if not isinstance(other, Vector):
@@ -284,7 +300,7 @@ class Vector:
 
     def __ge__(self, other):
         """
-        Проверяет, не короче ли первый вектор второго.
+        Check whether this vector is not shorter than the other.
         """
 
         if not isinstance(other, Vector):
@@ -294,19 +310,19 @@ class Vector:
 
     def __str__(self):
         """
-        Выводит информацию о векторе.
+        Return a human-readable description of the vector.
         """
         return f"Начало: {self.__start}, конец: {self.__end}"
 
     def __repr__(self):
         """
-        Возвращает представление объекта.
+        Return a string that can recreate the object.
         """
         return f"Vector({self.__start}, {self.__end})"
 
     def to_string(self):
         """
-        Преобразует вектор в строку формата ``"x1 y1 z1 x2 y2 z2"``.
+        Convert the vector to a string of the form ``"x1 y1 z1 x2 y2 z2"``.
         """
         return (
             f"{self.__start[0]} {self.__start[1]} {self.__start[2]} "
@@ -316,10 +332,10 @@ class Vector:
     @classmethod
     def from_string(cls, text):
         """
-        Создает вектор из строки формата ``"x1 y1 z1 x2 y2 z2"``.
+        Create a vector from a string of the form ``"x1 y1 z1 x2 y2 z2"``.
 
         Raises:
-            ValueError: если чисел не 6 или строка содержит не числа.
+            ValueError: If the text does not contain exactly six numbers or contains a non-number.
         """
 
         values = text.split()
@@ -345,6 +361,6 @@ class Vector:
 
     def copy(self):
         """
-        Создает копию вектора.
+        Return an independent copy of the vector.
         """
         return Vector(self.__start, self.__end)
