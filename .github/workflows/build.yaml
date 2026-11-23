@@ -49,9 +49,33 @@ jobs:
           path: laba2/dist/culinary-lab2.pyz
           retention-days: 30
 
+  build-lab3:
+    name: Build lab3
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build executable archive
+        working-directory: lab3
+        run: python build.py
+
+      - name: Smoke test the artifact
+        working-directory: lab3
+        run: echo 0 | python dist/fitness-tracker.pyz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lab3-build
+          path: lab3/dist/fitness-tracker.pyz
+          retention-days: 30
+
   release:
     name: Publish release
-    needs: [build-lab1, build-lab2]
+    needs: [build-lab1, build-lab2, build-lab3]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -64,8 +88,9 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: "Build #${{ github.run_number }} (lab1 + lab2)"
+          name: "Build #${{ github.run_number }} (lab1 + lab2 + lab3)"
           files: |
             dist/lab1.zip
             dist/culinary-lab2.pyz
+            dist/fitness-tracker.pyz
           generate_release_notes: true
