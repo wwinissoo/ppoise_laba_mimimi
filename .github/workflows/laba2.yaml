@@ -65,38 +65,3 @@ jobs:
         with:
           name: lab2-coverage-${{ matrix.python-version }}
           path: laba2/coverage.xml
-
-  build:
-    name: Build artifact
-    needs: [lint, test]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-
-      - name: Build executable archive
-        run: python build.py
-
-      - name: Smoke test the artifact
-        run: printf '8\n0\n' | python dist/culinary-lab2.pyz
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: culinary-lab2-${{ github.sha }}
-          path: laba2/dist/culinary-lab2.pyz
-          retention-days: 30
-
-      - name: Publish GitHub Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: lab2-build-${{ github.run_number }}
-          name: "Lab 2 — build #${{ github.run_number }}"
-          files: laba2/dist/culinary-lab2.pyz
-          generate_release_notes: true
