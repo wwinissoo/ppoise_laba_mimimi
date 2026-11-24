@@ -4,7 +4,14 @@ from datetime import datetime
 
 from fitness.application import FitnessTracker
 from fitness.exceptions import FitnessTrackerError
-from fitness.exercises import CardioExercise, ExerciseLibrary, FlexibilityExercise, MuscleGroup, StrengthExercise
+from fitness.exercises import (
+    BalanceExercise,
+    CardioExercise,
+    ExerciseLibrary,
+    FlexibilityExercise,
+    MuscleGroup,
+    StrengthExercise,
+)
 from fitness.nutrition import Food, FoodPortion, Meal
 from fitness.users import BodyMeasurement
 
@@ -19,11 +26,36 @@ def create_library():
     chest = MuscleGroup("Грудь", MuscleGroup.UPPER)
     legs = MuscleGroup("Ноги", MuscleGroup.LOWER, 72)
     back = MuscleGroup("Спина", MuscleGroup.UPPER)
+    shoulders = MuscleGroup("Плечи", MuscleGroup.UPPER)
+    arms = MuscleGroup("Руки", MuscleGroup.UPPER, 36)
+    core = MuscleGroup("Пресс", MuscleGroup.CORE, 24)
+    exercises = [
+        StrengthExercise("Жим лёжа", chest, 3, compound=True),
+        StrengthExercise("Приседания", legs, 3, compound=True, secondary_muscles=[back]),
+        StrengthExercise("Становая тяга", back, 4, compound=True, secondary_muscles=[legs]),
+        StrengthExercise("Жим стоя", shoulders, 3, compound=True, secondary_muscles=[arms]),
+        StrengthExercise("Подтягивания", back, 4, compound=True, secondary_muscles=[arms]),
+        StrengthExercise("Отжимания", chest, 2, compound=True, secondary_muscles=[arms]),
+        StrengthExercise("Выпады", legs, 2, compound=True),
+        StrengthExercise("Сгибание рук с гантелями", arms, 1),
+        StrengthExercise("Разведение гантелей в стороны", shoulders, 2),
+        StrengthExercise("Скручивания", core, 1),
+        StrengthExercise("Подъём ног в висе", core, 3),
+        CardioExercise("Бег на дорожке", legs, 2),
+        CardioExercise("Ходьба", legs, 1, met_value=3.5),
+        CardioExercise("Велотренажёр", legs, 1, met_value=7.0),
+        CardioExercise("Скакалка", legs, 2, met_value=11.0, impact=CardioExercise.HIGH_IMPACT),
+        CardioExercise("Гребной тренажёр", back, 2, met_value=7.0, secondary_muscles=[arms]),
+        FlexibilityExercise("Наклон к ногам", back, 1, 30),
+        FlexibilityExercise("Бабочка", legs, 1, 30),
+        FlexibilityExercise("Растяжка плеч", shoulders, 1, 20),
+        FlexibilityExercise("Кобра", core, 1, 20, bilateral=False),
+        BalanceExercise("Ласточка", legs, 2),
+        BalanceExercise("Стойка на одной ноге", legs, 1),
+    ]
     library = ExerciseLibrary()
-    library.add(StrengthExercise("Жим лёжа", chest, 3, compound=True))
-    library.add(StrengthExercise("Приседания", legs, 3, compound=True, secondary_muscles=[back]))
-    library.add(CardioExercise("Бег на дорожке", legs, 2))
-    library.add(FlexibilityExercise("Наклон к ногам", back, 1, 30))
+    for exercise in exercises:
+        library.add(exercise)
     return library
 
 

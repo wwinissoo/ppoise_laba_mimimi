@@ -53,7 +53,7 @@ class TestFitnessConsole:
 
     def test_defaults(self):
         console = FitnessConsole()
-        assert len(console.tracker.library.exercises) == len(create_library().exercises) == 4
+        assert len(console.tracker.library.exercises) == len(create_library().exercises) == 22
 
 
 class TestMain:
