@@ -1,0 +1,4 @@
+# Keep tests out of GitHub-generated source archives attached to releases
+lab*/tests export-ignore
+laba*/tests export-ignore
+lab1/**/test*.py export-ignore
