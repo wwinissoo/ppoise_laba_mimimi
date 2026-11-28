@@ -1,0 +1,9 @@
+[tool.black]
+line-length = 120
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=generic_lab --cov-branch --cov-report=term-missing --cov-fail-under=90"
+
+[tool.coverage.report]
+show_missing = true
