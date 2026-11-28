@@ -107,9 +107,6 @@ jobs:
           - os: ubuntu-latest
             target: linux
             archive_format: gztar
-          - os: windows-latest
-            target: windows
-            archive_format: zip
           - os: macos-latest
             target: macos
             archive_format: gztar
@@ -184,7 +181,6 @@ jobs:
           name: "Build #${{ github.run_number }} (lab1 + lab2 + lab3 + lab4)"
           files: |
             dist/executables-linux.tar.gz
-            dist/executables-windows.zip
             dist/executables-macos.tar.gz
             dist/all-labs.zip
             dist/lab1-source.zip
