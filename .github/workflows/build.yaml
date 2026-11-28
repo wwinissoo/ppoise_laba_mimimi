@@ -97,23 +97,100 @@ jobs:
           path: lab4/dist/generic-lab4.pyz
           retention-days: 30
 
+  build-executables:
+    name: Standalone executables (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux
+            archive_format: gztar
+          - os: windows-latest
+            target: windows
+            archive_format: zip
+          - os: macos-latest
+            target: macos
+            archive_format: gztar
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pyinstaller
+
+      - name: Build executables
+        shell: bash
+        run: |
+          build() {
+            pyinstaller --onefile --clean --name "$1" \
+              --distpath "$GITHUB_WORKSPACE/exe" \
+              --workpath "$RUNNER_TEMP/pyi/$1" \
+              --specpath "$RUNNER_TEMP/pyi/$1" \
+              --paths "$GITHUB_WORKSPACE/$2" \
+              "$GITHUB_WORKSPACE/$2/$3"
+          }
+          build lab1-vector lab1/Laba1_Vector main.py
+          build lab1-tictactoe lab1/TicTacToe main.py
+          build lab2-culinary laba2 main.py
+          build lab3-fitness-tracker lab3 main.py
+          build lab4-generic lab4 main.py
+
+      - name: Smoke test the executables
+        shell: bash
+        run: |
+          printf '8\n0\n' | ./exe/lab2-culinary*
+          echo 0 | ./exe/lab3-fitness-tracker*
+          echo 0 | ./exe/lab4-generic*
+
+      - name: Pack executables
+        run: python -c "import shutil; shutil.make_archive('executables-${{ matrix.target }}', '${{ matrix.archive_format }}', 'exe')"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: executables-${{ matrix.target }}
+          path: executables-${{ matrix.target }}.*
+          retention-days: 30
+
   release:
     name: Publish release
-    needs: [build-lab1, build-lab2, build-lab3, build-lab4]
+    needs: [build-lab1, build-lab2, build-lab3, build-lab4, build-executables]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           path: dist
           merge-multiple: true
+
+      - name: Create source archives
+        run: |
+          EXCLUDES=(-x "*__pycache__*" "*.pyc" "*.pytest_cache*" "*.venv*" "*.DS_Store" "*/dist/*")
+          zip -r dist/lab1-source.zip lab1 "${EXCLUDES[@]}"
+          zip -r dist/lab2-source.zip laba2 "${EXCLUDES[@]}"
+          zip -r dist/lab3-source.zip lab3 "${EXCLUDES[@]}"
+          zip -r dist/lab4-source.zip lab4 "${EXCLUDES[@]}"
+          zip -r dist/all-labs.zip lab1 laba2 lab3 lab4 "${EXCLUDES[@]}"
 
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
           name: "Build #${{ github.run_number }} (lab1 + lab2 + lab3 + lab4)"
           files: |
+            dist/executables-linux.tar.gz
+            dist/executables-windows.zip
+            dist/executables-macos.tar.gz
+            dist/all-labs.zip
+            dist/lab1-source.zip
+            dist/lab2-source.zip
+            dist/lab3-source.zip
+            dist/lab4-source.zip
             dist/lab1.zip
             dist/culinary-lab2.pyz
             dist/fitness-tracker.pyz
